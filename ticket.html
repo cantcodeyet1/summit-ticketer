@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Your Ticket — District 129 Conference</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap');
+:root{--bg:#004165;--surface:#004f7a;--border:#006094;--text:#f0ebe0;--muted:#7aabbf;--accent:#f2df74;--green:#00c853;--red:#e53935}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',sans-serif;background:linear-gradient(160deg,#004165 0%,#006094 100%);min-height:100dvh;display:flex;flex-direction:column;color:var(--text)}
+header{padding:14px 20px 12px;background:var(--surface);border-bottom:2px solid var(--accent);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.logo-top{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:800;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}
+.logo-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-top:2px}
+
+#loading-screen,#ticket-screen,#error-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;gap:20px}
+#ticket-screen{justify-content:flex-start;padding-top:28px}
+#error-screen{display:none}
+
+.load-ring{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.load-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+
+.greeting{width:100%;max-width:400px}
+.greeting-lbl{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:4px}
+.greeting-name{font-family:'Montserrat',sans-serif;font-size:26px;font-weight:800;color:var(--text);letter-spacing:.02em}
+.greeting-sub{font-size:13px;color:var(--muted);margin-top:4px}
+
+.section-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;width:100%;max-width:400px;margin-top:8px;margin-bottom:2px}
+
+.sessions-list{display:flex;flex-direction:column;gap:8px;width:100%;max-width:400px}
+.session-card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:10px;display:flex;align-items:stretch;overflow:hidden}
+.card-date{background:var(--accent);color:#07222a;font-family:'Montserrat',sans-serif;font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:0 14px;display:flex;align-items:center;justify-content:center;text-align:center;min-width:62px;line-height:1.3}
+.card-body{padding:14px 16px;flex:1}
+.card-day{font-size:9px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
+.card-name{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;letter-spacing:.03em;text-transform:uppercase}
+
+.qr-wrap{width:100%;max-width:400px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:8px}
+.qr-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;text-align:center}
+.qr-img{width:160px;height:160px;border-radius:8px;background:#fff;display:block}
+.qr-code{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:var(--accent);letter-spacing:.2em}
+
+.err-icon{font-size:48px}
+.err-title{font-family:'Montserrat',sans-serif;font-size:18px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.err-sub{font-size:13px;color:var(--muted);text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="logo-top">District 129</div>
+    <div class="logo-sub">Annual Conference · Mauritius 2026</div>
+  </div>
+</header>
+
+<div id="loading-screen">
+  <div class="load-ring"></div>
+  <div class="load-label">Loading your ticket…</div>
+</div>
+
+<div id="ticket-screen" style="display:none">
+  <div class="greeting">
+    <div class="greeting-lbl">Welcome</div>
+    <div class="greeting-name" id="t-name">—</div>
+    <div class="greeting-sub">Here are your registered sessions</div>
+  </div>
+  <div class="section-label">Your Sessions</div>
+  <div class="sessions-list" id="t-sessions"></div>
+  <div class="section-label">Your Entry Code</div>
+  <div class="qr-wrap">
+    <div class="qr-label">Show this at the door for each session</div>
+    <img class="qr-img" id="t-qr" src="" alt="QR code" />
+    <div class="qr-code" id="t-code">—</div>
+  </div>
+</div>
+
+<div id="error-screen">
+  <div class="err-icon">✗</div>
+  <div class="err-title">Ticket not found</div>
+  <div class="err-sub" id="err-msg">This link may be invalid or expired.<br>Please contact the conference team.</div>
+</div>
+
+<script>
+var API = 'https://script.google.com/macros/s/AKfycbzAKdxySDR6MX3XAsZNmz9AgkCsB022_bvhlIUE7unxBhBbnNqFkdm3Sm_-_5ySnPTl/exec';
+
+var SESSIONS_META = [
+  {name:'Conference Day One', day:1, date:'May\n08'},
+  {name:'District Council',   day:2, date:'May\n09'},
+  {name:'Conference Day Two', day:2, date:'May\n09'},
+  {name:'Gala Dinner',        day:2, date:'May\n09'},
+];
+
+function getMeta(name) {
+  var n = name.toLowerCase();
+  for (var i = 0; i < SESSIONS_META.length; i++) {
+    if (SESSIONS_META[i].name.toLowerCase() === n) return SESSIONS_META[i];
+  }
+  return {day:'', date:''};
+}
+
+window.onload = function() {
+  var params = new URLSearchParams(window.location.search);
+  var code = params.get('code');
+
+  if (!code) { showError('No ticket code in this link.'); return; }
+
+  fetch(API + '?action=ticket&code=' + encodeURIComponent(code))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d.error) { showError(d.error); return; }
+
+      document.getElementById('t-name').textContent = d.firstName || d.name;
+      document.getElementById('t-code').textContent = code.toUpperCase();
+      document.getElementById('t-qr').src =
+        'https://quickchart.io/qr?text=' + encodeURIComponent(code.toUpperCase()) + '&size=300&margin=2';
+
+      var html = '';
+      (d.sessions || []).forEach(function(s) {
+        var meta = getMeta(s);
+        var date = (meta.date || ('Day ' + meta.day)).replace(/\n/, '<br>');
+        html += '<div class="session-card">';
+        html += '<div class="card-date">' + date + '</div>';
+        html += '<div class="card-body"><div class="card-day">Day ' + meta.day + '</div>';
+        html += '<div class="card-name">' + s + '</div></div>';
+        html += '</div>';
+      });
+      document.getElementById('t-sessions').innerHTML = html;
+
+      document.getElementById('loading-screen').style.display = 'none';
+      document.getElementById('ticket-screen').style.display = 'flex';
+    })
+    .catch(function(){ showError('Could not load your ticket. Please try again.'); });
+};
+
+function showError(msg) {
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('err-msg').innerHTML = msg + '<br>Please contact the conference team.';
+  document.getElementById('error-screen').style.display = 'flex';
+}
+</script>
+</body>
+</html>
