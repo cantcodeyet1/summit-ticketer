@@ -60,8 +60,8 @@ header{padding:14px 20px 12px;background:var(--surface);border-bottom:2px solid 
 .approved .r-status{color:#07222a;background:var(--green)}
 .denied .r-status{color:#fff;background:var(--red)}
 .unknown .r-status{color:#07222a;background:var(--amber)}
-.r-name{font-family:'Montserrat',sans-serif;font-size:26px;font-weight:800;text-align:center;margin-bottom:6px;letter-spacing:.02em}
-.r-detail{font-size:13px;color:var(--muted);text-align:center;margin-bottom:32px}
+.r-name{font-family:'Montserrat',sans-serif;font-size:clamp(16px,5vw,26px);font-weight:800;text-align:center;margin-bottom:6px;letter-spacing:.02em;word-break:break-word;overflow-wrap:break-word;max-width:100%}
+.r-detail{font-size:13px;color:var(--muted);text-align:center;margin-bottom:32px;word-break:break-word;overflow-wrap:break-word;max-width:100%}
 .r-tap{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.08em;animation:pulse 1.5s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
 .stats-bar{padding:10px 20px;background:var(--surface);border-bottom:2px solid var(--accent);display:flex;gap:20px;flex-shrink:0}
@@ -82,7 +82,7 @@ header{padding:14px 20px 12px;background:var(--surface);border-bottom:2px solid 
 <body>
 <header>
   <div class="logo">
-    <div class="logo-top">District 129 <span style="font-size:9px;background:var(--teal);color:var(--accent);border-radius:3px;padding:1px 5px;margin-left:4px;font-family:monospace;font-weight:400">B19</span></div>
+    <div class="logo-top">District 129 <span style="font-size:9px;background:var(--teal);color:var(--accent);border-radius:3px;padding:1px 5px;margin-left:4px;font-family:monospace;font-weight:400">B20</span></div>
     <div class="logo-sub">Annual Conference · Mauritius 2026</div>
   </div>
   <div id="status">connecting...</div>
