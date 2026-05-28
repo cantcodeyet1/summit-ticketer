@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>District 129 Conference Check-in</title>
+<title>Zimbabwe Corporate Summit Check-in</title>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap');
@@ -15,21 +15,14 @@ header{padding:14px 20px 12px;background:var(--surface);border-bottom:2px solid 
 .logo{display:flex;flex-direction:column;gap:1px}
 .logo-top{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:800;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}
 .logo-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
-#status{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);display:flex;align-items:center;gap:5px}
-#status::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--muted);transition:background .3s}
-#status.on::before{background:var(--green)}
-#session-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;gap:28px}
-.screen-title{text-align:center}
-.screen-title h1{font-family:'Montserrat',sans-serif;font-size:20px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--text);margin-bottom:4px}
-.screen-title p{font-size:13px;color:var(--muted)}
-.sessions-grid{display:grid;grid-template-columns:1fr;gap:10px;width:100%;max-width:400px}
-.session-btn{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:10px;padding:0;color:var(--text);font-family:'DM Sans',sans-serif;text-align:left;cursor:pointer;display:flex;align-items:stretch;overflow:hidden;transition:border-color .2s}
-.session-btn:active{transform:scale(.98)}
-.session-btn:active,.session-btn:hover{border-color:var(--accent);background:#0f3d4d}
-.btn-date{background:var(--accent);color:#07222a;font-family:'Montserrat',sans-serif;font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:0 14px;display:flex;align-items:center;justify-content:center;text-align:center;min-width:62px;line-height:1.3}
-.btn-body{padding:14px 16px 14px 16px;flex:1}
-.day-tag{font-size:9px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
-.btn-name{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;letter-spacing:.03em;text-transform:uppercase}
+#start-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px;gap:32px;text-align:center}
+.start-logo{width:72px;height:72px;object-fit:contain;opacity:.9}
+.start-event{display:flex;flex-direction:column;gap:8px}
+.start-title{font-family:'Montserrat',sans-serif;font-size:clamp(20px,6vw,28px);font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--text);line-height:1.15}
+.start-tagline{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase}
+.start-meta{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.06em}
+.start-btn{background:var(--accent);border:none;border-radius:14px;padding:18px 48px;color:#07222a;font-family:'Montserrat',sans-serif;font-size:16px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:opacity .15s;-webkit-tap-highlight-color:transparent}
+.start-btn:active{opacity:.8}
 #scanner-screen{flex:1;display:none;flex-direction:column}
 .session-bar{padding:10px 20px;background:var(--surface);border-bottom:2px solid var(--accent);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .session-bar .lbl{font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.1em}
@@ -72,30 +65,24 @@ header{padding:14px 20px 12px;background:var(--surface);border-bottom:2px solid 
 #manual-wrap{display:none;padding:20px;flex-direction:column;gap:12px}
 .manual-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;color:var(--text);font-family:'DM Mono',monospace;font-size:14px;outline:none;text-align:center}
 .check-btn{background:var(--accent);border:none;border-radius:10px;padding:14px;color:#07222a;font-size:15px;font-weight:700;font-family:'Montserrat',sans-serif;cursor:pointer;width:100%;letter-spacing:.05em;text-transform:uppercase}
-#loading-wrap{display:flex;flex-direction:column;align-items:center;gap:18px;width:100%;max-width:280px}
-.load-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
-.load-pct{font-size:40px;font-family:'Montserrat',sans-serif;font-weight:800;color:var(--accent);line-height:1}
-.load-track{width:100%;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
-.load-fill{height:100%;width:0%;background:var(--accent);border-radius:2px;transition:width .4s ease}
 </style>
 </head>
 <body>
 <header>
   <div class="logo">
-    <div class="logo-top">District 129 <span style="font-size:9px;background:var(--teal);color:var(--accent);border-radius:3px;padding:1px 5px;margin-left:4px;font-family:monospace;font-weight:400">B21</span></div>
-    <div class="logo-sub">Annual Conference · Mauritius 2026</div>
+    <div class="logo-top">Zimbabwe Corporate Summit</div>
+    <div class="logo-sub">The Future is Human · 28 June 2025</div>
   </div>
-  <div id="status">connecting...</div>
 </header>
 
-<div id="session-screen">
-  <div id="loading-wrap">
-    <div class="load-label">Connecting</div>
-    <div class="load-pct" id="load-pct">0%</div>
-    <div class="load-track"><div class="load-fill" id="load-fill"></div></div>
+<div id="start-screen">
+  <img class="start-logo" src="assets/toastmasters-logo.png" alt="Toastmasters" />
+  <div class="start-event">
+    <div class="start-title">Zimbabwe<br>Corporate Summit</div>
+    <div class="start-tagline">The Future is Human</div>
+    <div class="start-meta">28 June 2025 · 14:00 – 16:00</div>
   </div>
-  <div class="screen-title" id="sessions-title" style="display:none"><h1>Select Session</h1><p>Which event are you scanning for?</p></div>
-  <div class="sessions-grid" id="sessions-grid" style="display:none"></div>
+  <button class="start-btn" onclick="startScanning()">Start Scanning</button>
 </div>
 
 <div id="scanner-screen">
@@ -103,12 +90,12 @@ header{padding:14px 20px 12px;background:var(--surface);border-bottom:2px solid 
     <div><div class="lbl">Scanning for</div><div class="nm" id="active-name">—</div></div>
     <div style="display:flex;gap:8px">
       <button class="change-btn" id="manual-toggle" onclick="toggleManual()">⌨</button>
-      <button class="change-btn" onclick="showSessions()">Change</button>
+      <button class="change-btn" onclick="goHome()">⌂</button>
     </div>
   </div>
   <div id="manual-panel" style="display:none;padding:12px 16px;background:var(--bg);border-bottom:1px solid var(--border);gap:8px;flex-direction:column">
     <div style="display:flex;gap:8px">
-      <input type="text" class="manual-input" id="manual-code" placeholder="Email or code…" style="flex:1;padding:10px 14px;font-size:13px" onkeydown="if(event.key==='Enter')checkManual()" />
+      <input type="text" class="manual-input" id="manual-code" placeholder="Email address…" style="flex:1;padding:10px 14px;font-size:13px" onkeydown="if(event.key==='Enter')checkManual()" />
       <button class="check-btn" onclick="checkManual()" style="width:auto;padding:10px 18px;font-size:13px">Go</button>
     </div>
   </div>
@@ -137,7 +124,7 @@ header{padding:14px 20px 12px;background:var(--surface);border-bottom:2px solid 
 </div>
 
 <script>
-var API = 'https://script.google.com/macros/s/AKfycbxK0X8TCNKkv0FDHqlpdvM8OeH9hk7bNRVYJKEsThUOBzwc7eH_-KkIWthZAo-ydmo3sg/exec';
+var API = 'https://script.google.com/macros/s/AKfycbzpUoTgQmU5YABLXg1_cq4rg4sMNEFidtO7J1K4BmzQMeGpPfNOR-RTb554zrE0Cc5ZDQ/exec';
 var activeSession = null;
 var scanning = false;
 var stream = null;
@@ -156,75 +143,19 @@ var _lastCode = null;
 var _lastCodeTime = 0;
 var CODE_COOLDOWN = 10000;
 
-var DEFAULTS = [
-  {id:'day1', name:'Conference Day One', day:1, date:'May\n08'},
-  {id:'day2', name:'District Council', day:2, date:'May\n09'},
-  {id:'day2', name:'Conference Day Two', day:2, date:'May\n09'},
-  {id:'gala', name:'Gala Dinner',        day:2, date:'May\n09'}
-];
+var SESSION_NAME = 'Corporate Summit';
 
-window.onload = function() {
-  var pct = 0;
-  var loadTimer = setInterval(function() {
-    pct = Math.min(pct + (Math.random() * 8 + 4), 88);
-    setLoadPct(pct);
-  }, 200);
-
-  fetch(API + '?action=sessions')
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      clearInterval(loadTimer);
-      setLoadPct(100);
-      setTimeout(function(){
-        renderSessions(d.sessions && d.sessions.length ? d.sessions : DEFAULTS);
-        setStatus(true);
-      }, 300);
-    })
-    .catch(function(){
-      clearInterval(loadTimer);
-      setLoadPct(100);
-      setTimeout(function(){
-        renderSessions(DEFAULTS);
-        setStatus(false);
-      }, 300);
-    });
-};
-
-function setLoadPct(p) {
-  p = Math.round(p);
-  document.getElementById('load-fill').style.width = p + '%';
-  document.getElementById('load-pct').textContent = p + '%';
-}
-
-function renderSessions(list) {
-  var html = '';
-  for (var i = 0; i < list.length; i++) {
-    var s = list[i];
-    var safe = s.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    var date = (s.date || ('Day '+s.day)).replace(/\n/g,'<br>');
-    html += '<button class="session-btn day'+s.day+'" onclick="pick(\''+safe+'\')">';
-    html += '<div class="btn-date">'+date+'</div>';
-    html += '<div class="btn-body"><div class="day-tag">Day '+s.day+'</div><div class="btn-name">'+s.name+'</div></div>';
-    html += '</button>';
-  }
-  var grid = document.getElementById('sessions-grid');
-  grid.innerHTML = html;
-  document.getElementById('loading-wrap').style.display = 'none';
-  document.getElementById('sessions-title').style.display = '';
-  grid.style.display = '';
-}
-
-function pick(name) {
-  activeSession = name;
+function startScanning() {
+  activeSession = SESSION_NAME;
   cntOk = 0; totalExpected = 0;
-  document.getElementById('active-name').textContent = name;
+  document.getElementById('active-name').textContent = SESSION_NAME;
   document.getElementById('cnt-ok').textContent = '0';
   document.getElementById('cnt-tot').textContent = '—';
-  document.getElementById('session-screen').style.display = 'none';
+  document.getElementById('start-screen').style.display = 'none';
   document.getElementById('scanner-screen').style.display = 'flex';
   document.querySelector('header').style.display = 'none';
   startCam();
-  fetch(API + '?action=count&session=' + encodeURIComponent(name))
+  fetch(API + '?action=count&session=' + encodeURIComponent(SESSION_NAME))
     .then(function(r){ return r.json(); })
     .then(function(d){
       if (d.total !== undefined) totalExpected = d.total;
@@ -238,11 +169,12 @@ function updateExpected() {
   document.getElementById('cnt-tot').textContent = Math.max(0, totalExpected - cntOk);
 }
 
-function showSessions() {
+function goHome() {
   stopCam();
+  document.getElementById('result-overlay').style.display = 'none';
   document.getElementById('scanner-screen').style.display = 'none';
-  document.getElementById('session-screen').style.display = 'flex';
   document.querySelector('header').style.display = '';
+  document.getElementById('start-screen').style.display = 'flex';
 }
 
 function setHint(msg) {
@@ -342,9 +274,11 @@ function lookup(code, done) {
       if (done) done();
       if (d.status === 'approved') {
         cntOk++; document.getElementById('cnt-ok').textContent = cntOk; updateExpected();
-        show('approved','✓',d.name, d.detail || activeSession);
+        show('approved','✓', d.name, d.detail || activeSession);
       } else if (d.status === 'already') {
         show('unknown','⚠', d.name || 'Already checked in', 'Scanned ' + fmtTime(d.time));
+      } else if (d.status === 'walkin') {
+        show('denied','✗', d.name || 'Not registered', 'Not in registration list');
       } else {
         show('denied','✗', d.name || 'Not registered', d.reason || 'No ticket for this session');
       }
@@ -426,12 +360,6 @@ function dismiss() {
       setHint('Next scan in ' + count + 's…');
     }
   }, 1000);
-}
-
-function setStatus(on) {
-  var el = document.getElementById('status');
-  el.textContent = on ? 'connected' : 'offline';
-  el.className = on ? 'on' : '';
 }
 </script>
 </body>
