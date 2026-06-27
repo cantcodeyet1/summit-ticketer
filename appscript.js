@@ -2,17 +2,16 @@
 //  Zimbabwe Corporate Summit — Check-in Backend
 // ============================================================
 
-const SHEET_ID = '1SDqFPeL6HMO_DLxHz0gYKFfpr87Dp41U48JdvfKrMuk';
+const SHEET_ID = '1FSJdLY8RjQKP0D_Ehifd5ZbijhsVn2IY9Or2SVbWU0c';
 
 const COL = {
-  FIRST:    'First Name',
-  SURNAME:  'Surname',
-  EMAIL:    'Email',
-  SESSIONS: 'Sessions',
+  FULL_NAME: 'Full Name',
+  EMAIL:     'Email address',
+  SESSIONS:  'Sessions',
 };
 
 const SESSIONS = [
-  {id:'summit', name:'Corporate Summit', day:1, date:'Jun\n28'}
+  {id:'launch', name:'Club Launch', day:1, date:'Jun\n27'}
 ];
 
 // ── HTTP handler ─────────────────────────────────────────────
@@ -52,8 +51,7 @@ function handleCheckin(email, sessionName) {
   const headers = data[0];
 
   const idx = {
-    first:    headers.indexOf(COL.FIRST),
-    surname:  headers.indexOf(COL.SURNAME),
+    fullName: headers.indexOf(COL.FULL_NAME),
     email:    headers.indexOf(COL.EMAIL),
     sessions: headers.indexOf(COL.SESSIONS),
   };
@@ -71,7 +69,7 @@ function handleCheckin(email, sessionName) {
   }
 
   const row       = data[rowIndex];
-  const fullName  = `${row[idx.first]} ${row[idx.surname]}`.trim();
+  const fullName  = String(row[idx.fullName]).trim();
   const attendeeEmail = row[idx.email];
 
   const registeredSessions = String(row[idx.sessions])
@@ -170,7 +168,7 @@ function styleSheet() {
 const MAILJET_API_KEY    = 'TODO_paste_your_mailjet_api_key_here';
 const MAILJET_SECRET_KEY = 'TODO_paste_your_mailjet_secret_key_here';
 const FROM_EMAIL         = 'divisionc@toastmasters129.org';
-const FROM_NAME          = 'Zimbabwe Corporate Summit';
+const FROM_NAME          = 'Lawyers Toastmasters Club';
 
 function sendQREmails() {
   const ss      = SpreadsheetApp.openById(SHEET_ID);
@@ -179,8 +177,7 @@ function sendQREmails() {
   const headers = data[0];
 
   const idx = {
-    first:    headers.indexOf(COL.FIRST),
-    surname:  headers.indexOf(COL.SURNAME),
+    fullName: headers.indexOf(COL.FULL_NAME),
     email:    headers.indexOf(COL.EMAIL),
     sessions: headers.indexOf(COL.SESSIONS),
     sent:     headers.indexOf('QR Sent'),
@@ -204,8 +201,8 @@ function sendQREmails() {
     if (!email) { Logger.log(`Row ${i}: skipped — no email`); continue; }
     if (row[sentColIdx]) { Logger.log(`Row ${i}: skipped — already sent`); continue; }
 
-    const firstName = row[idx.first];
-    const fullName  = `${row[idx.first]} ${row[idx.surname]}`.trim();
+    const fullName  = String(row[idx.fullName]).trim();
+    const firstName = fullName.split(' ')[0];
 
     const qrUrl = `https://quickchart.io/qr?text=${encodeURIComponent(email)}&size=250&margin=2`;
 
